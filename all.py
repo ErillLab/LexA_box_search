@@ -152,7 +152,7 @@ def nucleotide_identity():
     output_write = open(output_fasta, 'w')
 
     for i in range(len(flanking_regions)):
-        output_write.write(acc_list[i] + "\n" + flanking_regions[i] + "\n")
+        output_write.write('>' + acc_list[i] + "\n" + flanking_regions[i] + "\n")
 
     output_write.close()
 
