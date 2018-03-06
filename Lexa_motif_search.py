@@ -119,13 +119,13 @@ def entrezsearch():
 
         if strand_list[i] == 1:
             flanking_handle = Entrez.efetch(db="nucleotide", id=acc_list[i], rettype="fasta", strand=strand_list[i],
-                                            seq_start=int(position_list[i]) - int(input["downstream_region"]),
-                                            seq_stop=int(position_list[i]) + int(input["upstream_region"]))
+                                            seq_start=int(position_list[i]) - int(input["upstream_region"]),
+                                            seq_stop=int(position_list[i]) + int(input["downstream_region"]))
 
         else:
             flanking_handle = Entrez.efetch(db="nucleotide", id=acc_list[i], rettype="fasta", strand=strand_list[i],
-                                            seq_start=int(position_list[i]) - int(input["upstream_region"]),
-                                            seq_stop=int(position_list[i]) + int(input["downstream_region"]))
+                                            seq_start=int(position_list[i]) - int(input["downstream_region"]),
+                                            seq_stop=int(position_list[i]) + int(input["upstream_region"]))
 
         flanking_parse = SeqIO.read(flanking_handle, "fasta")
         flanking_regions.append(flanking_parse.seq._data)
