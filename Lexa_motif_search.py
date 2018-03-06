@@ -53,23 +53,15 @@ def blastsearch():
     print "Choosing best query."
 
 
-    # Select best query from all the reference sequences: minimum e value
+    # Create matrix: rows = queries, columns = blast_hit_IDS
 
-    for query in blast_records:
-        scoring = 0
-        for record in query.descriptions:
-            scoring += record.e
-        if scoring < count:
-            count = scoring
-            best_query = query
+    matrix = [[] for i in range(len(blast_records))]
 
-    print best_query.query
+    for i in range(len(matrix)):
+        for hit in blast_records[i].descriptions:
+            matrix[i].append(hit.e)
 
 
-    # Compile BLAST results from the best match
-
-    for alignment in best_query.alignments:
-        resultslist.append(alignment.title.split()[0].split('|')[3])
 
     return resultslist
 
