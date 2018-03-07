@@ -41,8 +41,7 @@ def blastsearch():
 
     handleresults = NCBIWWW.qblast(program='blastp', database='refseq_protein', sequence=ids,        #BLAST search
                                    entrez_query=input["restriction_taxon"],
-                                   expect=input["e_value_threshold"],
-                                   hitlist_size=30)
+                                   expect=input["e_value_threshold"])
 
     blast_records = NCBIXML.parse(handleresults)        #Parse BLAST results
 
@@ -50,20 +49,42 @@ def blastsearch():
 
     count = input["e_value_threshold"]
 
-    print "Choosing best query."
+    #Create a list with all the hits
+
+    all_hits = []
+
+    for query_search in blast_records:
+
+        for i in query_search.descriptions:
+
+            if i.accession not in all_hits:
+                all_hits.append(i.accession)
 
 
     # Create matrix: rows = queries, columns = blast_hit_IDS
 
     matrix = [[] for i in range(len(blast_records))]
 
-    for i in range(len(matrix)):
-        for hit in blast_records[i].descriptions:
-            matrix[i].append(hit.e)
+    for i in range(len(blast_records)):
+
+        results = []
+        evals = []
+
+        for result in blast_records[i].descriptions:
+
+            results.append(result.accession)
+            evals.append(result.e)
+
+        for hit in all_hits:
+
+            if hit in results:
+                matrix[i].append(evals[results.index(hit)])         #Add to the list of the current query its E-values, following the order of the results list
+
+            else:
+                matrix[i].append(100)             #If that query does not have the current hit as a result, no E-value but 100 is added
 
 
-
-    return resultslist
+    return all_hits, matrix
 
 
 
@@ -73,7 +94,7 @@ def entrezsearch():
 
     acc_list, position_list, strand_list, flanking_regions = [], [], [], []
 
-    results = blastsearch()
+    results, matrix = blastsearch()
 
     print "Retrieving Entrez queries."
 
@@ -203,3 +224,6 @@ def motif_search():
 #Apply final function
 
 motif_search()
+
+
+
