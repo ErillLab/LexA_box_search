@@ -41,7 +41,7 @@ def blastsearch():
 
     handleresults = NCBIWWW.qblast(program='blastp', database='refseq_protein', sequence=ids,        #BLAST search
                                    entrez_query=input["restriction_taxon"],
-                                   expect=input["e_value_threshold"])
+                                   expect=input["e_value_threshold"], hitlist_size=10)
 
     blast_records = NCBIXML.parse(handleresults)        #Parse BLAST results
 
@@ -67,8 +67,7 @@ def blastsearch():
 
     for i in range(len(blast_records)):
 
-        results = []
-        evals = []
+        results, evals = [], []
 
         for result in blast_records[i].descriptions:
 
@@ -83,6 +82,15 @@ def blastsearch():
             else:
                 matrix[i].append(100)             #If that query does not have the current hit as a result, no E-value but 100 is added
 
+
+    #Test
+
+    test_file = 'blast_results.txt'
+
+    test_file = open(test_file, 'w')
+
+    for hit in all_hits:
+        test_file.write(hit + '\t')
 
     return all_hits, matrix
 
@@ -106,6 +114,8 @@ def entrezsearch():
         #Parse results
 
         records = Entrez.read(handle)
+
+        print acc
 
         #Get the strand and positions of the gene, and the accession-version id of the genome
         #Only one result per BLAST match
@@ -161,6 +171,8 @@ def nucleotide_identity():
 
     flanking_regions, acc_list = entrezsearch()
 
+    removed_regions, removed_acc = [], []
+
     print "Removing similar sequences."
 
     length = len(flanking_regions)
@@ -186,8 +198,8 @@ def nucleotide_identity():
             identity = float(len(matches)) / len(seq1) * 100
 
             if identity > input["identity_threshold"]:
-                flanking_regions.pop(i)
-                acc_list.pop(i)
+                removed_regions.append(flanking_regions[i])
+                removed_acc.append(acc_list[i])
                 break
 
     #Write filtered results in fasta file
@@ -197,7 +209,8 @@ def nucleotide_identity():
     output_write = open(output_fasta, 'w')
 
     for i in range(len(flanking_regions)):
-        output_write.write('>' + acc_list[i] + "\n" + flanking_regions[i] + "\n")
+        if flanking_regions[i] not in removed_regions and acc_list[i] not in removed_acc:
+            output_write.write('>' + acc_list[i] + "\n" + flanking_regions[i] + "\n")
 
     output_write.close()
 
