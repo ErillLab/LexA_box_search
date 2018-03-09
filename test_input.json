@@ -1,0 +1,10 @@
+{
+    "protein_ids": "ReferenceTestDataset.fasta",
+    "restriction_taxon": "txid28211[orgn]",
+    "upstream_region": 300,
+    "downstream_region": 50,
+    "e_value_threshold": 1e-3,
+    "identity_threshold": 90,
+    "motif_width":10,
+    "motif_distribution": "anr"
+}
