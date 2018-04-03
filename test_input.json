@@ -1,10 +1,12 @@
 {
-    "protein_ids": "ReferenceTestDataset.fasta",
-    "restriction_taxon": "txid28211[orgn]",
+    "bacteria_orders": "taxonomy_result.txt",
+    "protein_ids": "ReferenceDataset.fasta",
     "upstream_region": 300,
     "downstream_region": 50,
-    "e_value_threshold": 1e-3,
+    "e_value_threshold": 10e-15,
     "identity_threshold": 90,
-    "motif_width":10,
-    "motif_distribution": "anr"
+    "motif_width":30,
+    "motif_distribution": "anr",
+    "group_distance":0.1,
+    "output_name": "LexA_sequences"
 }
